@@ -11,3 +11,4 @@ venv.bak/
 .idea/
 .vscode/   
 *.log
+*.resolved

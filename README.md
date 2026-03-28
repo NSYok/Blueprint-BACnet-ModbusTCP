@@ -4,36 +4,52 @@
 
 ## 📂 รายชื่อไฟล์ในโปรเจกต์
 
-### 1. [bacnet_reader.py](file:///d:/Repo/LABtest/bacnet_reader.py) - ท่ามาตรฐาน (Standard/Direct)
-*   **นิยาม:** สคริปต์พื้นฐานสำหรับดึงข้อมูล BACnet โดยใช้วิธีระบุที่อยู่ตรงๆ (Direct Addressing) และการค้นหาด้วยชื่อ (Name Mapping)
+### 1. [bacnet_reader.py](file:///c:/Users/UsEr/Desktop/Repository/Blueprint-BACnet-ModbusTCP/bacnet_reader.py) - ท่ามาตรฐาน (Standard/Direct)
+*   **นิยาม:** สคริปต์พื้นฐานสำหรับดึงข้อมูล BACnet โดยแยกฟังก์ชัน Read และ Write ชัดเจน
+*   **จุดเด่น:** 
+    *   `read_direct()`: อ่านแบบระบุตำแหน่งตรงๆ
+    *   `read_by_name()`: ค้นหาและอ่านผ่าน Object Name (Mapping)
+    *   `write_value()`: ตัวอย่างการเขียนค่าลงใน Objects
 *   **เหมาะสำหรับ:** อุปกรณ์ทั่วไปที่ต่อตรงผ่าน IP (เช่น Chiller, Power Meter, AHU)
-*   **จุดเด่น:** ใช้งานง่าย รวดเร็ว และรองรับ BAC0 เวอร์ชั่น 2025 (asyncio)
 
-### 2. [bacnet_router_reader.py](file:///d:/Repo/LABtest/bacnet_router_reader.py) - ท่าทะลวง Router (Router/Virtual)
-*   **นิยาม:** สคริปต์สำหรับเจาะจงค้นหาอุปกรณ์ที่ซ่อนอยู่หลัง Router หรือเป็นระบบ Virtual Device (เช่น Simulator)
+### 2. [bacnet_router_reader.py](file:///c:/Users/UsEr/Desktop/Repository/Blueprint-BACnet-ModbusTCP/bacnet_router_reader.py) - ท่าทะลวง Router (Router/Virtual)
+*   **นิยาม:** สคริปต์สำหรับเจาะจงค้นหาอุปกรณ์ที่ซ่อนอยู่หลัง Router หรือเป็นระบบ Virtual Device
+*   **จุดเด่น:** 
+    *   `discover_device()`: สแกนหาที่อยู่ในเครือข่ายอัตโนมัติ
+    *   เพิ่มฟังก์ชันแยก Read/Write แบบเดียวกับท่ามาตรฐาน
 *   **เหมาะสำหรับ:** อุปกรณ์ที่เป็น Gateway (MS/TP to IP) หรือ Simulator ที่มี Device ซ้อนหลายเลเยอร์
-*   **จุดเด่น:** ใช้ `client.discover(networks=True)` เพื่อกวาดหาลูกๆ ทั้งหมดใน Subnet อัตโนมัติ
 
-### 3. [bacnet_yabe_bypass.py](file:///d:/Repo/LABtest/bacnet_yabe_bypass.py) - ท่างัดแงะ (Index Scanning)
-*   **นิยาม:** สคริปต์ที่เลียนแบบพฤติกรรมของโปรแกรม YABE โดยการอ่านข้อมูลทีละ Index แทนการขอก้อนใหญ่
-*   **เหมาะสำหรับ:** อุปกรณ์ที่มีจุดเยอะเกินไปจนหน้างานร่ม (Segmentation Error) หรือ Simulator บางตัวที่ไม่เสถียร
-*   **จุดเด่น:** ค่อยๆ อ่านทีละจุด (Array Indexing) ทำให้ดึงข้อมูลได้สำเร็จ 100% แม้อุปกรณ์จะส่งข้อมูลก้อนใหญ่ไม่เป็น
+### 3. [bacnet_yabe_bypass.py](file:///c:/Users/UsEr/Desktop/Repository/Blueprint-BACnet-ModbusTCP/bacnet_yabe_bypass.py) - ท่างัดแงะ (Index Scanning)
+*   **นิยาม:** สคริปต์ที่เลียนแบบพฤติกรรมของโปรแกรม YABE โดยการอ่านข้อมูลทีละ Index
+*   **จุดเด่น:** 
+    *   `get_total_objects()`: การอ่านจำนวน Object ทั้งหมด
+    *   `fetch_objects_by_index()`: ค่อยๆ อ่านทีละจุดเพื่อเลี่ยง Segmentation Error (เลียนแบบ YABE)
+    *   รองรับการเขียนค่า (Write) ในรูปแบบ Blueprint
+*   **เหมาะสำหรับ:** อุปกรณ์ที่มีจุดเยอะเกินไปจนหน้างานร่ม หรือ Simulator บางตัวที่ไม่เสถียร
 
-### 4. [modbus_reader.py](file:///d:/Repo/LABtest/modbus_reader.py) - Modbus TCP Client
-*   **นิยาม:** สคริปต์สำหรับอ่านและเขียนข้อมูล Modbus TCP โดยใช้ `pymodbus`
+### 4. [modbus_reader.py](file:///c:/Users/UsEr/Desktop/Repository/Blueprint-BACnet-ModbusTCP/modbus_reader.py) - Modbus TCP Client
+*   **นิยาม:** สคริปต์สำหรับอ่านและเขียนข้อมูล Modbus TCP โดยแยกฟังก์ชัน `read_data()` และ `write_data()`
+*   **จุดเด่น:** แยกการประมวลผลข้อมูลออกจากการเชื่อมต่อ (Modular) ทำให้ง่ายต่อการนำไป Reuse
 *   **เหมาะสำหรับ:** PLC, Inverter, หรือ Sensor ที่รองรับแค่ Modbus TCP
-*   **จุดเด่น:** แสดงตัวอย่างการอ่านค่าหลายๆ Register พร้อมกันและการเขียนค่ากลับ (Writeback) ในลูป
+
+### 5. [mqtt_reader.py](file:///c:/Users/UsEr/Desktop/Repository/Blueprint-BACnet-ModbusTCP/MQTT/mqtt_reader.py) - MQTT Data Reader & Filter
+*   **นิยาม:** สคริปต์สำหรับเชื่อมต่อ MQTT เพื่อดึงข้อมูล (Subscribe) และส่งสถานะกลับ (Publish) ในรูปแบบ JSON
+*   **จุดเด่น:** 
+    *   **JSON Handling**: รองรับการ Parse JSON Payload และส่งคืนค่าในรูปแบบ Structured JSON
+    *   **Data Filtering**: มีตัวอย่างการคัดกรองข้อมูล (เช่น แจ้งสถานะ High เมื่อ Temp > 27°C)
+    *   **Modern API**: รองรับ paho-mqtt 2.x+ (Callback API v2)
+*   **เหมาะสำหรับ:** อุปกรณ์ IoT, Gateway, หรือการเชื่อมต่อกับ Digital Twin ผ่าน MQTT Broker
 
 ---
 
 ## 🛠 การติดตั้ง (Installation)
-ต้องใช้ Python 3.12+ และติดตั้ง Library ดังนี้:
+Must use Python 3.12+ and install the following libraries:
 ```powershell
-pip install BAC0 pymodbus
+pip install BAC0 pymodbus paho-mqtt
 ```
 
 ## 🚀 วิธีใช้งาน (Quick Start)
-1.  **ตั้งค่า IP:** แก้ไขค่า `TARGET_IP` และ `LOCAL_IP` ในไฟล์ `.py` แต่ละไฟล์ให้ตรงกับวงเน็ตเวิร์คของคุณ
+1.  **ตั้งค่า IP:** แก้ไขค่า `TARGET_IP`, `DEVICE_ID` และ `LOCAL_IP` ในไฟล์ `.py` แต่ละไฟล์ให้ตรงกับสภาพแวดล้อมของคุณ
 2.  **รันสคริปต์:**
     ```powershell
     py bacnet_reader.py
